@@ -1,3 +1,3 @@
 # codexion
 
-![](images/codexion_tra.pdf)
+![](images/codexion_tra.png)
