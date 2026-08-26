@@ -1,3 +1,3 @@
 # codexion
 
-![](images/codexion_tra.png)
+![some theory of thread](images/codexion_tra.png)
