@@ -15,7 +15,7 @@ int main(void)
     pthread_create(&thread, NULL, worker, NULL);
 
     pthread_join(thread, NULL);
-    printf("%ld, %ld",&thread, thread);
+    printf("%ln, %ld",&thread, thread);
     
     return 0;
 }
