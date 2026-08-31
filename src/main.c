@@ -6,6 +6,7 @@ int	main(void)
 {
 	pthread_t	coders[N_CODERS];
 	t_coder		coder_data[N_CODERS];
+    t_dongle	dongles[N_CODERS];
 	long		start_time;
 
 	start_time = get_time_ms();
