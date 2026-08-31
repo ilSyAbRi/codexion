@@ -8,19 +8,26 @@
 #define REQUIRED_COMPILES 3
 #define DONGLE_COOLDOWN 50
 
+long get_time_ms(void)
+{
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000L + tv.tv_usec / 1000);
+}
+
 void *coder_routing(void* arg) {
-    int id =  *(int*)arg;
+    t_coder *coder =  (t_coder *)arg;
     int i = 0;
-    printf("coder %d started\n",id);
     while (i < REQUIRED_COMPILES) {
 
-        printf("coder %d is compiling\n", id);
+        printf("%ld %d is compiling\n", get_time_ms() - coder->start_time, coder->id);
         usleep(TIME_TO_COMPILE * 1000);
 
-        printf("coder %d is debugging\n", id);
+        printf("%ld %d is debugging\n", get_time_ms() - coder->start_time, coder->id);
         usleep(TIME_TO_DEBUG * 1000);
 
-        printf("coder %d is refactoring\n", id);
+        printf("%ld %d is refactoring\n", get_time_ms() - coder->start_time, coder->id);
         usleep(TIME_TO_REFACTOR * 1000);
 
         i++;
@@ -30,12 +37,14 @@ void *coder_routing(void* arg) {
 
 int main() {
     pthread_t coders[N_CODERS];
-    int ids[N_CODERS];
+    t_coder coder_data[N_CODERS];
     int i = 0;
+    long start_time = get_time_ms();
 
     while (i < N_CODERS) {
-        ids[i] = i + 1;
-        pthread_create(&coders[i], NULL, coder_routing, &ids[i]);
+        coder_data[i].id = i + 1;
+        coder_data[i].start_time = start_time;
+        pthread_create(&coders[i], NULL, coder_routing, &coder_data[i]);
         i++;
     }
 
