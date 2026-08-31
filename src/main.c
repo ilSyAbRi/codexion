@@ -38,8 +38,9 @@ void *coder_routing(void* arg) {
 int main() {
     pthread_t coders[N_CODERS];
     t_coder coder_data[N_CODERS];
-    int i = 0;
+    t_dongle dongles[N_CODERS];
     long start_time = get_time_ms();
+    int i = 0;
 
     while (i < N_CODERS) {
         coder_data[i].id = i + 1;

@@ -13,4 +13,9 @@ typedef struct s_coder
     long start_time;
 } t_coder;
 
+typedef struct s_dongle
+{
+    pthread_mutex_t mutex;
+} t_dongle;
+
 #endif //CODEXION_CODEXION_H
