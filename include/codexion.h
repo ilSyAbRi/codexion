@@ -12,6 +12,7 @@
 # define TIME_TO_REFACTOR 200
 # define REQUIRED_COMPILES 3
 # define DONGLE_COOLDOWN 50
+
 typedef struct s_dongle
 {
 	pthread_mutex_t	mutex;

@@ -48,7 +48,6 @@ void *coder_routing(void* arg) {
         pthread_mutex_lock(&coder_data->first_dongle->mutex);
         pthread_mutex_lock(&coder_data->second_dongle->mutex);
         printf("%ld %d is compiling\n", get_time_ms() - coder_data->start_time, coder_data->id);
-        usleep(TIME_TO_COMPILE * 1000);
         pthread_mutex_unlock(&coder_data->first_dongle->mutex);
         pthread_mutex_unlock(&coder_data->second_dongle->mutex);
 
