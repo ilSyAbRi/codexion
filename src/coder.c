@@ -45,11 +45,10 @@ void *coder_routing(void* arg) {
     int i = 0;
     while (i < REQUIRED_COMPILES) {
 
-        pthread_mutex_lock(&coder_data->first_dongle->mutex);
-        pthread_mutex_lock(&coder_data->second_dongle->mutex);
+		take_dongles(coder_data);
         printf("%ld %d is compiling\n", get_time_ms() - coder_data->start_time, coder_data->id);
-        pthread_mutex_unlock(&coder_data->first_dongle->mutex);
-        pthread_mutex_unlock(&coder_data->second_dongle->mutex);
+		usleep(TIME_TO_COMPILE * 1000);
+        release_dongles(coder_data);
 
         printf("%ld %d is debugging\n", get_time_ms() - coder_data->start_time, coder_data->id);
         usleep(TIME_TO_DEBUG * 1000);

@@ -15,6 +15,7 @@
 
 typedef struct s_dongle
 {
+	int id;
 	pthread_mutex_t	mutex;
 }	t_dongle;
 
@@ -38,6 +39,9 @@ void	create_coders(pthread_t *coders, t_coder *coder_data);
 void	join_coders(pthread_t *coder);
 
 void	*coder_routing(void *arg);
+
+void    take_dongles(t_coder *coder);
+void    release_dongles(t_coder *coder);
 
 
 #endif
