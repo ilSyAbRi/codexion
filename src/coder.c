@@ -1,6 +1,6 @@
 #include "../include/codexion.h"
 
-void	init_coders_data(t_coder *coder_data,t_dongle *dongles_data, long start_time)
+void	init_coders_data(t_coder *coder_data,t_dongle *dongles_data, long start_time, t_simulation *simulation)
 {
 	int	i;
 
@@ -12,6 +12,7 @@ void	init_coders_data(t_coder *coder_data,t_dongle *dongles_data, long start_tim
         coder_data[i].second_dongle = &dongles_data[(i + 1) % N_CODERS];
 		coder_data[i].start_time = start_time;
 		coder_data[i].burnout_deadline = start_time + TIME_TO_BURNOUT;
+		coder_data[i].simulation = simulation;
  		i++;
 	}
 }
@@ -44,7 +45,7 @@ void	join_coders(pthread_t *coder)
 void *coder_routing(void* arg) {
     t_coder *coder_data =  (t_coder *)arg;
     int i = 0;
-    while (i < REQUIRED_COMPILES) {
+    while (i < REQUIRED_COMPILES && !simulation_stopped(coder_data->simulation)) {
 
 		take_dongles(coder_data);
 		coder_data->burnout_deadline = get_time_ms() + TIME_TO_BURNOUT;

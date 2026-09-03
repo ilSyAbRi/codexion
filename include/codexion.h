@@ -16,6 +16,7 @@
 typedef struct s_simulation
 {
 	int	stop;
+	pthread_mutex_t	mutex;
 }	t_simulation;
 
 typedef struct s_dongle
@@ -41,7 +42,9 @@ long	get_time_ms(void);
 void	init_dongles_data(t_dongle *dongles_data, int count);
 
 void	init_coders_data(t_coder *coder_data,
-		t_dongle *dongles_data, long start_time);
+		t_dongle *dongles_data, long start_time,
+		t_simulation *simulation);
+void	init_simulation(t_simulation *simulation);
 
 void	create_coders(pthread_t *coders, t_coder *coder_data);
 
@@ -55,5 +58,8 @@ void    release_dongles(t_coder *coder);
 void	create_monitor(pthread_t *monitor, t_coder *coder_data);
 void	join_monitor(pthread_t monitor);
 void	*monitor_routine(void *arg);
+
+void	stop_simulation(t_simulation *simulation);
+int		simulation_stopped(t_simulation *simulation);
 
 #endif
