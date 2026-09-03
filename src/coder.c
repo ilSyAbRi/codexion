@@ -11,6 +11,7 @@ void	init_coders_data(t_coder *coder_data,t_dongle *dongles_data, long start_tim
         coder_data[i].first_dongle = &dongles_data[i];
         coder_data[i].second_dongle = &dongles_data[(i + 1) % N_CODERS];
 		coder_data[i].start_time = start_time;
+		coder_data[i].burnout_deadline = start_time + TIME_TO_BURNOUT;
  		i++;
 	}
 }
@@ -46,6 +47,7 @@ void *coder_routing(void* arg) {
     while (i < REQUIRED_COMPILES) {
 
 		take_dongles(coder_data);
+		coder_data->burnout_deadline = get_time_ms() + TIME_TO_BURNOUT;
         printf("%ld %d is compiling\n", get_time_ms() - coder_data->start_time, coder_data->id);
 		usleep(TIME_TO_COMPILE * 1000);
         release_dongles(coder_data);
