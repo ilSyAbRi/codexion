@@ -6,7 +6,7 @@
 # include <unistd.h>
 # include <sys/time.h>
 # define N_CODERS 5
-# define TIME_TO_BURNOUT 800
+# define TIME_TO_BURNOUT 10000
 # define TIME_TO_COMPILE 200
 # define TIME_TO_DEBUG 200
 # define TIME_TO_REFACTOR 200
@@ -16,13 +16,16 @@
 typedef struct s_simulation
 {
 	int	stop;
-	pthread_mutex_t	mutex;
+	int				finished_coders;
+	pthread_mutex_t finished_mutex;
+	pthread_mutex_t	mutex_stop;
+	pthread_mutex_t	deadline_mutex;
 }	t_simulation;
 
 typedef struct s_dongle
 {
 	int id;
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	mutex_dongle;
 }	t_dongle;
 
 typedef struct s_coder
@@ -61,5 +64,10 @@ void	*monitor_routine(void *arg);
 
 void	stop_simulation(t_simulation *simulation);
 int		simulation_stopped(t_simulation *simulation);
+long protect_get_burnout_deadline(t_coder *coder_data);
+void protect_reset_burnout_deadline(t_coder *coder_data);
+void	coder_finished(t_simulation *simulation);
+int stop_monitor_all_coder_finished(t_simulation *simulation);
+
 
 #endif

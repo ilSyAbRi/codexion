@@ -10,9 +10,9 @@ int	main(void)
 	long		start_time;
 
 	start_time = get_time_ms();
+	init_simulation(&simulation);
     init_dongles_data(dongles_data, N_CODERS);
 	init_coders_data(coder_data, dongles_data, start_time, &simulation);
-	init_simulation(&simulation);
 	create_coders(coders, coder_data);
 	create_monitor(&monitor, coder_data);
 	join_coders(coders);

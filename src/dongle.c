@@ -8,7 +8,7 @@ void init_dongles_data(t_dongle *dongles_data, int count)
     while (i < count)
     {
         dongles_data[i].id = i + 1;
-        pthread_mutex_init(&dongles_data[i].mutex, NULL);
+        pthread_mutex_init(&dongles_data[i].mutex_dongle, NULL);
         i++;
     }
 }
@@ -17,18 +17,18 @@ void take_dongles(t_coder *coder_data)
 {
     if (coder_data->second_dongle->id > coder_data->first_dongle->id)
     {
-        pthread_mutex_lock(&coder_data->second_dongle->mutex);
-        pthread_mutex_lock(&coder_data->first_dongle->mutex);
+        pthread_mutex_lock(&coder_data->second_dongle->mutex_dongle);
+        pthread_mutex_lock(&coder_data->first_dongle->mutex_dongle);
     }
     else
     {
-        pthread_mutex_lock(&coder_data->first_dongle->mutex);
-        pthread_mutex_lock(&coder_data->second_dongle->mutex);
+        pthread_mutex_lock(&coder_data->first_dongle->mutex_dongle);
+        pthread_mutex_lock(&coder_data->second_dongle->mutex_dongle);
     }
 }
 
 void release_dongles(t_coder *coder_data)
 {
-    pthread_mutex_unlock(&coder_data->first_dongle->mutex);
-    pthread_mutex_unlock(&coder_data->second_dongle->mutex);
+    pthread_mutex_unlock(&coder_data->first_dongle->mutex_dongle);
+    pthread_mutex_unlock(&coder_data->second_dongle->mutex_dongle);
 }

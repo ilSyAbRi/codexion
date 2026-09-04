@@ -48,7 +48,7 @@ void *coder_routing(void* arg) {
     while (i < REQUIRED_COMPILES && !simulation_stopped(coder_data->simulation)) {
 
 		take_dongles(coder_data);
-		coder_data->burnout_deadline = get_time_ms() + TIME_TO_BURNOUT;
+		protect_reset_burnout_deadline(coder_data);
         printf("%ld %d is compiling\n", get_time_ms() - coder_data->start_time, coder_data->id);
 		usleep(TIME_TO_COMPILE * 1000);
         release_dongles(coder_data);
@@ -61,5 +61,7 @@ void *coder_routing(void* arg) {
 
         i++;
     }
+	if (i == REQUIRED_COMPILES)
+		coder_finished(coder_data->simulation);
     return NULL;
 }
