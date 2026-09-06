@@ -5,6 +5,10 @@
 # include <pthread.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <stddef.h>
+# include <stdlib.h>
+# include <string.h>
+
 # define N_CODERS 5
 # define TIME_TO_BURNOUT 10000
 # define TIME_TO_COMPILE 200
@@ -12,6 +16,18 @@
 # define TIME_TO_REFACTOR 200
 # define REQUIRED_COMPILES 3
 # define DONGLE_COOLDOWN 50
+
+typedef struct s_config
+{
+	int number_of_coders;
+	int time_to_burnout;
+	int time_to_compile;
+	int time_to_debug;
+	int time_to_refactor;
+	int number_of_compile_required;
+	int dongle_cooldown;
+	int scheduler;
+} t_config;
 
 typedef struct s_simulation
 {
@@ -38,6 +54,7 @@ typedef struct s_coder
 	t_simulation	*simulation;
 }	t_coder;
 
+#define TEST 10
 
 
 long	get_time_ms(void);
@@ -68,6 +85,10 @@ long protect_get_burnout_deadline(t_coder *coder_data);
 void protect_reset_burnout_deadline(t_coder *coder_data);
 void	coder_finished(t_simulation *simulation);
 int stop_monitor_all_coder_finished(t_simulation *simulation);
-
-
+int is_valid_number(char **argv);
+int check_atoi_helper(char *argv);
+int check_atoi(char **argv);
+int check_scheduler(char *str);
+int store_data(char **argv,t_config *config);
+int parse_args(int argc, char **argv, t_config *config);
 #endif
