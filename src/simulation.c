@@ -33,7 +33,7 @@ void	coder_finished(t_simulation *simulation)
 	pthread_mutex_unlock(&simulation->finished_mutex);
 }
 
-int stop_monitor_all_coder_finished(t_simulation *simulation)
+int stop_monitor_all_coder_finished(t_simulation *simulation, t_config *config)
 {
 	int finished;
 
@@ -41,5 +41,5 @@ int stop_monitor_all_coder_finished(t_simulation *simulation)
 	finished = simulation->finished_coders;
 	pthread_mutex_unlock(&simulation->finished_mutex);
 
-	return (finished == N_CODERS);
+	return (finished == config->number_of_coders);
 }

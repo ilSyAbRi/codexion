@@ -9,14 +9,6 @@
 # include <stdlib.h>
 # include <string.h>
 
-# define N_CODERS 5
-# define TIME_TO_BURNOUT 10000
-# define TIME_TO_COMPILE 200
-# define TIME_TO_DEBUG 200
-# define TIME_TO_REFACTOR 200
-# define REQUIRED_COMPILES 3
-# define DONGLE_COOLDOWN 50
-
 typedef struct s_config
 {
 	int number_of_coders;
@@ -27,6 +19,7 @@ typedef struct s_config
 	int number_of_compile_required;
 	int dongle_cooldown;
 	int scheduler;
+	long start_time;
 } t_config;
 
 typedef struct s_simulation
@@ -46,29 +39,27 @@ typedef struct s_dongle
 
 typedef struct s_coder
 {
-	int			id;
-	long		start_time;
-	long		burnout_deadline;
-    t_dongle* first_dongle;
-    t_dongle* second_dongle;
+	int				id;
+	long			start_time;
+	long			burnout_deadline;
+	t_dongle		*first_dongle;
+	t_dongle		*second_dongle;
 	t_simulation	*simulation;
+	t_config		*config;
 }	t_coder;
-
-#define TEST 10
-
 
 long	get_time_ms(void);
 
 void	init_dongles_data(t_dongle *dongles_data, int count);
 
 void	init_coders_data(t_coder *coder_data,
-		t_dongle *dongles_data, long start_time,
-		t_simulation *simulation);
+		t_dongle *dongles_data, t_simulation *simulation,
+		t_config *config);
 void	init_simulation(t_simulation *simulation);
 
 void	create_coders(pthread_t *coders, t_coder *coder_data);
 
-void	join_coders(pthread_t *coder);
+void	join_coders(pthread_t *coder, t_config *config);
 
 void	*coder_routing(void *arg);
 
@@ -84,8 +75,9 @@ int		simulation_stopped(t_simulation *simulation);
 long protect_get_burnout_deadline(t_coder *coder_data);
 void protect_reset_burnout_deadline(t_coder *coder_data);
 void	coder_finished(t_simulation *simulation);
-int stop_monitor_all_coder_finished(t_simulation *simulation);
+int stop_monitor_all_coder_finished(t_simulation *simulation, t_config *config);
 int is_valid_number(char **argv);
+int check_number(char *str);
 int check_atoi_helper(char *argv);
 int check_atoi(char **argv);
 int check_scheduler(char *str);
