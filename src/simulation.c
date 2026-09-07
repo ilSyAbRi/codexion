@@ -7,12 +7,14 @@ void	init_simulation(t_simulation *simulation)
     pthread_mutex_init(&simulation->mutex_stop, NULL);
 	pthread_mutex_init(&simulation->deadline_mutex, NULL);
 	pthread_mutex_init(&simulation->finished_mutex, NULL);
+	pthread_cond_init(&simulation->cond, NULL);
 }
 
 void	stop_simulation(t_simulation *simulation)
 {
     pthread_mutex_lock(&simulation->mutex_stop);
 	simulation->stop = 1;
+	pthread_cond_broadcast(&simulation->cond);
     pthread_mutex_unlock(&simulation->mutex_stop);
 }
 

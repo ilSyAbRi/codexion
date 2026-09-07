@@ -4,7 +4,7 @@
 # include <stdio.h>
 # include <pthread.h>
 # include <unistd.h>
-# include <sys/time.h>
+#include <sys/time.h>
 # include <stddef.h>
 # include <stdlib.h>
 # include <string.h>
@@ -29,6 +29,7 @@ typedef struct s_simulation
 	pthread_mutex_t finished_mutex;
 	pthread_mutex_t	mutex_stop;
 	pthread_mutex_t	deadline_mutex;
+	pthread_cond_t cond;
 }	t_simulation;
 
 typedef struct s_dongle
@@ -46,6 +47,7 @@ typedef struct s_coder
 	t_dongle		*second_dongle;
 	t_simulation	*simulation;
 	t_config		*config;
+	pthread_mutex_t mutex_sleep;
 }	t_coder;
 
 long	get_time_ms(void);
@@ -83,4 +85,5 @@ int check_atoi(char **argv);
 int check_scheduler(char *str);
 int store_data(char **argv,t_config *config);
 int parse_args(int argc, char **argv, t_config *config);
+int	thread_sleep(t_coder *coder_data, long time);
 #endif
