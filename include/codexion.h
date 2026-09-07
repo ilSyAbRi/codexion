@@ -36,8 +36,18 @@ typedef struct s_simulation
 typedef struct s_dongle
 {
 	int id;
+	int	owner;
+	long			cooldown_deadline;
 	pthread_mutex_t	mutex_dongle;
+	pthread_cond_t	cond_dongle;
 }	t_dongle;
+
+typedef enum s_task{
+	COMPILE,
+	DEBUG,
+	REFACTOR,
+	BURNOUT,
+}			t_task;
 
 typedef struct s_coder
 {
@@ -66,14 +76,14 @@ void	join_coders(pthread_t *coder, t_config *config);
 
 void	*coder_routing(void *arg);
 
-void    take_dongles(t_coder *coder);
+int take_dongles(t_coder *coder_data);
 void    release_dongles(t_coder *coder);
 
 void	create_monitor(pthread_t *monitor, t_coder *coder_data);
 void	join_monitor(pthread_t monitor);
 void	*monitor_routine(void *arg);
 
-void	stop_simulation(t_simulation *simulation);
+void	stop_simulation(t_coder *coder_data ,t_simulation *simulation);
 int		simulation_stopped(t_simulation *simulation);
 long protect_get_burnout_deadline(t_coder *coder_data);
 void protect_reset_burnout_deadline(t_coder *coder_data);
@@ -87,7 +97,8 @@ int check_scheduler(char *str);
 int store_data(char **argv,t_config *config);
 int parse_args(int argc, char **argv, t_config *config);
 int	thread_sleep(t_coder *coder_data, long time);
-int	coder_phase(t_coder *coder_data, long time, char *message);
-void	log_message(t_coder *coder_data, int id, char *message);
-void log_message_burnout(t_coder *coder_data, int id, char *message);
+
+
+int	coder_phase(t_coder *coder_data, long time, t_task task);
+void	log_burnout(t_coder *coders_data, int burned_coder);
 #endif

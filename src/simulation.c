@@ -11,11 +11,19 @@ void	init_simulation(t_simulation *simulation)
 	pthread_mutex_init(&simulation->mutex_print, NULL);
 }
 
-void	stop_simulation(t_simulation *simulation)
+void	stop_simulation(t_coder *coder_data ,t_simulation *simulation)
 {
+	int i;
+
+	i = 0;
     pthread_mutex_lock(&simulation->mutex_stop);
 	simulation->stop = 1;
-	pthread_cond_broadcast(&simulation->cond);
+	while (i < coder_data->config->number_of_coders)
+	{
+		pthread_cond_broadcast(&coder_data[i].first_dongle->cond_dongle);
+		pthread_cond_broadcast(&coder_data[i].second_dongle->cond_dongle);
+		i++;
+	}
     pthread_mutex_unlock(&simulation->mutex_stop);
 }
 

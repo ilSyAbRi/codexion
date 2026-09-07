@@ -1,22 +1,40 @@
 #include "../include/codexion.h"
 
-void	log_message(t_coder *coder_data, int id, char *message)
+
+void	log_task(t_coder	*coder_data, t_task task)
 {
+	long	time;
+
 	pthread_mutex_lock(&coder_data->simulation->mutex_print);
-	printf("%ld %d %s\n",
-		get_time_ms() - coder_data->start_time,
-		id,
-		message);
+	if (!simulation_stopped(coder_data->simulation))
+	{
+		time = get_time_ms()-coder_data->start_time;
+		if (task == COMPILE)
+		{
+			printf("%ld %d has taken a dongle\n", time, coder_data->id);
+			printf("%ld %d has taken a dongle\n", time, coder_data->id);
+			printf("%ld %d is compiling\n", time, coder_data->id);
+		}
+		else if (task == DEBUG)
+			printf("%ld %d is debugging\n", time, coder_data->id);
+		else if (task == REFACTOR)
+			printf("%ld %d is refactoring\n", time, coder_data->id);
+	}
 	pthread_mutex_unlock(&coder_data->simulation->mutex_print);
 }
 
-void	log_message_burnout(t_coder *coder_data, int id, char *message)
+void	log_burnout(t_coder *coders_data, int burned_coder)
 {
-	log_message(coder_data,id, message);
+	long time;
+	pthread_mutex_lock(&coders_data[burned_coder].simulation->mutex_print);
+	time = get_time_ms()-coders_data[burned_coder].start_time;
+	printf("%ld %d burned out\n", time, coders_data[burned_coder].id);
+	stop_simulation(coders_data, coders_data[burned_coder].simulation);
+	pthread_mutex_unlock(&coders_data[burned_coder].simulation->mutex_print);
 }
 
-int	coder_phase(t_coder *coder_data, long time, char *message)
+int	coder_phase(t_coder *coder_data, long time, t_task task)
 {
-	log_message(coder_data, coder_data->id, message);
+	log_task(coder_data, task);
 	return (thread_sleep(coder_data, time));
 }

@@ -43,8 +43,7 @@ void *monitor_routine(void *arg)
             deadline = protect_get_burnout_deadline(&coders_data[i]);
             if (get_time_ms() >= deadline)
             {
-                log_message_burnout(&coders_data[i] ,coders_data[i].id,"is burnout");
-                stop_simulation(coders_data[i].simulation);
+                log_burnout(coders_data, i);
                 return NULL;
             }
             i++;
