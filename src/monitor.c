@@ -30,30 +30,27 @@ void protect_reset_burnout_deadline(t_coder *coder_data)
 
 void *monitor_routine(void *arg)
 {
-    	t_coder	*coders_data;
-        int i;
-        long deadline;
+    t_coder	*coders_data;
+    int i;
+    long deadline;
 
-        coders_data = (t_coder*) arg;
-        while(1)
+    coders_data = (t_coder*) arg;
+    while(1)
+    {
+        i = 0;
+        while (i < coders_data->config->number_of_coders)
         {
-            i = 0;
-            while (i < coders_data->config->number_of_coders)
+            deadline = protect_get_burnout_deadline(&coders_data[i]);
+            if (get_time_ms() >= deadline)
             {
-	            deadline = protect_get_burnout_deadline(&coders_data[i]);
-                if (get_time_ms() >= deadline)
-                {
-                    printf("%ld %d burned out\n",get_time_ms() - coders_data[i].start_time ,coders_data[i].id);
-                    stop_simulation(coders_data[i].simulation);
-                    return NULL;
-                }
-            i++;
-            }
-            if (stop_monitor_all_coder_finished(coders_data->simulation, coders_data->config))
-            {
+                log_message_burnout(&coders_data[i] ,coders_data[i].id,"is burnout");
+                stop_simulation(coders_data[i].simulation);
                 return NULL;
             }
-            usleep(1000);
+            i++;
         }
-        return (NULL);
+        if (stop_monitor_all_coder_finished(coders_data->simulation, coders_data->config))
+            return NULL;
+    }
+    return (NULL);
 }

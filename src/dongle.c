@@ -13,18 +13,15 @@ void init_dongles_data(t_dongle *dongles_data, int count)
     }
 }
 
+void td(t_dongle *dongle)
+{
+    pthread_mutex_lock(&dongle->mutex_dongle);
+}
+
 void take_dongles(t_coder *coder_data)
 {
-    if (coder_data->second_dongle->id > coder_data->first_dongle->id)
-    {
-        pthread_mutex_lock(&coder_data->second_dongle->mutex_dongle);
-        pthread_mutex_lock(&coder_data->first_dongle->mutex_dongle);
-    }
-    else
-    {
-        pthread_mutex_lock(&coder_data->first_dongle->mutex_dongle);
-        pthread_mutex_lock(&coder_data->second_dongle->mutex_dongle);
-    }
+    td(coder_data->first_dongle);
+    td(coder_data->second_dongle);
 }
 
 void release_dongles(t_coder *coder_data)

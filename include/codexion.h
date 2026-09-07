@@ -30,6 +30,7 @@ typedef struct s_simulation
 	pthread_mutex_t	mutex_stop;
 	pthread_mutex_t	deadline_mutex;
 	pthread_cond_t cond;
+	pthread_mutex_t mutex_print;
 }	t_simulation;
 
 typedef struct s_dongle
@@ -86,4 +87,7 @@ int check_scheduler(char *str);
 int store_data(char **argv,t_config *config);
 int parse_args(int argc, char **argv, t_config *config);
 int	thread_sleep(t_coder *coder_data, long time);
+int	coder_phase(t_coder *coder_data, long time, char *message);
+void	log_message(t_coder *coder_data, int id, char *message);
+void log_message_burnout(t_coder *coder_data, int id, char *message);
 #endif

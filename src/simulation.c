@@ -8,6 +8,7 @@ void	init_simulation(t_simulation *simulation)
 	pthread_mutex_init(&simulation->deadline_mutex, NULL);
 	pthread_mutex_init(&simulation->finished_mutex, NULL);
 	pthread_cond_init(&simulation->cond, NULL);
+	pthread_mutex_init(&simulation->mutex_print, NULL);
 }
 
 void	stop_simulation(t_simulation *simulation)
