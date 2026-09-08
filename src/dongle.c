@@ -21,22 +21,19 @@ int request_dongle(t_coder *coder_data, t_dongle *dongle)
     pthread_mutex_lock(&dongle->mutex_dongle);
     while (!simulation_stopped(coder_data->simulation))
     {
-        while (!simulation_stopped(coder_data->simulation) && get_time_ms() < dongle->cooldown_deadline);
+        if (thread_sleep(coder_data, dongle->cooldown_deadline-get_time_ms()))
+            break;
 
         if (dongle->owner == -1)
             break;
-    
+
         if (simulation_stopped(coder_data->simulation))
             break;
         pthread_cond_wait(&dongle->cond_dongle, &dongle->mutex_dongle);
     }
-
-    if (simulation_stopped(coder_data->simulation))
-        return (pthread_mutex_unlock(&dongle->mutex_dongle), 1);
-
     dongle->owner = coder_data->id;
     pthread_mutex_unlock(&dongle->mutex_dongle);
-    return 0;
+    return simulation_stopped(coder_data->simulation);
 }
 
 int take_dongles(t_coder *coder_data)

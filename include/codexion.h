@@ -74,7 +74,9 @@ void	create_coders(pthread_t *coders, t_coder *coder_data);
 
 void	join_coders(pthread_t *coder, t_config *config);
 
-void	*coder_routing(void *arg);
+void *coder_routing(void *arg);
+
+void *NewFunction(int i, t_coder *coder_data);
 
 int take_dongles(t_coder *coder_data);
 void    release_dongles(t_coder *coder);
