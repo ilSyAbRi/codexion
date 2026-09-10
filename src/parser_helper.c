@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:54:51 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 19:05:23 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 19:07:21 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ int	check_atoi(char **argv)
 
 	i = 1;
 	if (atoi(argv[1]) == 0)
-		return 1;
-
+		return (1);
 	while (i < 8)
 	{
 		if (check_atoi_helper(argv[i]))
