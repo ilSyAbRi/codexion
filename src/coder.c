@@ -1,29 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   coder.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/10 18:25:38 by ilsyabri          #+#    #+#             */
+/*   Updated: 2026/09/10 18:56:26 by ilsyabri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/codexion.h"
+
+void	init_coder(t_coder *coder, t_dongle *dongles, int i)
+{
+	t_dongle	*left_dongle;
+	t_dongle	*right_dongle;
+
+	coder->id = i + 1;
+	left_dongle = &dongles[i];
+	right_dongle = &dongles[(i + 1) % coder->config->number_of_coders];
+	coder->first_dongle = (t_dongle *[2]){left_dongle,
+		right_dongle}[coder->id == coder->config->number_of_coders];
+	coder->second_dongle = (t_dongle *[2]){right_dongle,
+		left_dongle}[coder->id == coder->config->number_of_coders];
+	coder->n_compiles = 0;
+	coder->start_time = coder->config->start_time;
+	coder->burnout_deadline = coder->config->start_time
+		+ coder->config->time_to_burnout;
+	pthread_mutex_init(&coder->mutex_sleep, NULL);
+}
 
 void	init_coders_data(t_coder *coder_data, t_dongle *dongles_data,
 			t_simulation *simulation, t_config *config)
 {
-	int			i;
-	t_dongle	*left_dongle;
-	t_dongle	*right_dongle;
+	int	i;
 
 	i = 0;
 	while (i < config->number_of_coders)
 	{
-		coder_data[i].id = i + 1;
-		left_dongle = &dongles_data[i];
-		right_dongle = &dongles_data[(i + 1) % config->number_of_coders];
-		coder_data[i].first_dongle = (t_dongle *[2]){left_dongle,
-			right_dongle}[coder_data[i].id == config->number_of_coders];
-		coder_data[i].second_dongle = (t_dongle *[2]){right_dongle,
-			left_dongle}[coder_data[i].id == config->number_of_coders];
-		coder_data[i].n_compiles = 0;
-		coder_data[i].start_time = config->start_time;
-		coder_data[i].burnout_deadline = config->start_time
-			+ config->time_to_burnout;
 		coder_data[i].simulation = simulation;
 		coder_data[i].config = config;
-		pthread_mutex_init(&coder_data[i].mutex_sleep, NULL);
+		init_coder(&coder_data[i], dongles_data, i);
 		i++;
 	}
 }
@@ -79,8 +97,6 @@ void	*coder_routing(void *arg)
 			break ;
 		coder_data->n_compiles++;
 	}
-	if (coder_data->n_compiles
-		== coder_data->config->number_of_compile_required)
-		coder_finished(coder_data->simulation);
+	coder_finished(coder_data->simulation);
 	return (NULL);
 }
