@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:55:10 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:55:11 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 21:12:59 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,13 @@ int	stop_monitor_all_coder_finished(t_simulation *simulation, t_config *config)
 	finished = simulation->finished_coders;
 	pthread_mutex_unlock(&simulation->finished_mutex);
 	return (finished == config->number_of_coders);
+}
+
+void	destroy_simulation(t_simulation *simulation)
+{
+	pthread_mutex_destroy(&simulation->mutex_stop);
+	pthread_mutex_destroy(&simulation->deadline_mutex);
+	pthread_mutex_destroy(&simulation->finished_mutex);
+	pthread_cond_destroy(&simulation->cond);
+	pthread_mutex_destroy(&simulation->mutex_print);
 }

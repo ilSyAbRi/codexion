@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:54:26 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:54:27 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 21:23:53 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,17 @@ t_heap	*init_heap(void)
 	heap->capacity = 2;
 	heap->arr = malloc(sizeof(t_request) * heap->capacity);
 	if (!heap->arr)
+	{
+		free(heap);
 		return (NULL);
+	}
 	return (heap);
+}
+
+void	destroy_heap(t_heap *heap)
+{
+	if (!heap)
+		return ;
+	free(heap->arr);
+	free(heap);
 }

@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:55:43 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:55:43 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 21:26:19 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stddef.h>
 # include <stdlib.h>
 # include <string.h>
+
 
 typedef struct s_request
 {
@@ -100,7 +101,7 @@ void	init_simulation(t_simulation *simulation);
 
 void	create_coders(pthread_t *coders, t_coder *coder_data);
 
-void	join_coders(pthread_t *coder, t_config *config);
+void	join_coders(pthread_t *coder, t_coder *coder_data, t_config *config);
 
 void	*coder_routing(void *arg);
 
@@ -134,5 +135,9 @@ void	log_burnout(t_coder *coders_data, int burned_coder);
 t_heap	*init_heap(void);
 void	heap_push(t_heap *heap, t_request request);
 int		heap_pop(t_heap *heap);
+
+void	destroy_simulation(t_simulation *simulation);
+void	destroy_dongles_data(t_dongle *dongles_data, int count);
+void	destroy_heap(t_heap *heap);
 
 #endif

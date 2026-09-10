@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:53:38 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:53:40 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 21:38:50 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	*monitor_routine(void *arg)
 			deadline = protect_get_burnout_deadline(&coders_data[i]);
 			if (get_time_ms() > deadline
 				&& coders_data[i].n_compiles
-				< coders_data[i].config->number_of_compile_required)
+				< coders_data[i].config->number_of_compile_required) // i should handle that
 			{
 				log_burnout(coders_data, i);
 				return (NULL);

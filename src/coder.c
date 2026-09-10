@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:25:38 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:56:26 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 21:05:22 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	create_coders(pthread_t *coder, t_coder *coder_data)
 	}
 }
 
-void	join_coders(pthread_t *coder, t_config *config)
+void	join_coders(pthread_t *coder, t_coder *coder_data, t_config *config)
 {
 	int	i;
 
@@ -69,6 +69,7 @@ void	join_coders(pthread_t *coder, t_config *config)
 	while (i < config->number_of_coders)
 	{
 		pthread_join(coder[i], NULL);
+		pthread_mutex_destroy(&coder_data[i].mutex_sleep);
 		i++;
 	}
 }

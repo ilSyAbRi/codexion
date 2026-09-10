@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:53:54 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:56:19 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 21:24:51 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,18 @@ void	release_dongles(t_coder *coder_data)
 		+ coder_data->config->dongle_cooldown;
 	pthread_cond_broadcast(&coder_data->second_dongle->cond_dongle);
 	pthread_mutex_unlock(&coder_data->second_dongle->mutex_dongle);
+}
+
+void	destroy_dongles_data(t_dongle *dongles_data, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		pthread_cond_destroy(&dongles_data[i].cond_dongle);
+		pthread_mutex_destroy(&dongles_data[i].mutex_dongle);
+		destroy_heap(dongles_data[i].heap);
+		i++;
+	}
 }

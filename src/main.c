@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:55:56 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:55:56 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/10 21:25:38 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,21 @@ void	run_simulation(t_config *config)
 	coder_data = malloc(sizeof(t_coder) * config->number_of_coders);
 	dongles_data = malloc(sizeof(t_dongle) * config->number_of_coders);
 	if (!coders || !coder_data || !dongles_data)
+	{
+		free(coders);
+		free(coder_data);
+		free(dongles_data);
 		return ;
+	}
 	init_simulation(&simulation);
 	init_dongles_data(dongles_data, config->number_of_coders);
 	init_coders_data(coder_data, dongles_data, &simulation, config);
 	create_coders(coders, coder_data);
 	create_monitor(&monitor, coder_data);
-	join_coders(coders, config);
+	join_coders(coders, coder_data, config);
 	join_monitor(monitor);
+	destroy_dongles_data(dongles_data, config->number_of_coders);
+	destroy_simulation(&simulation);
 	free(coders);
 	free(coder_data);
 	free(dongles_data);
@@ -45,5 +52,6 @@ int	main(int argc, char **argv)
 		return (1);
 	config.start_time = get_time_ms();
 	run_simulation(&config);
+	
 	return (0);
 }
