@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/10 18:55:43 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/11 00:01:07 by ilsyabri         ###   ########.fr       */
+/*   Created: 2026/09/11 00:30:54 by ilsyabri          #+#    #+#             */
+/*   Updated: 2026/09/11 00:34:53 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <stddef.h>
 # include <stdlib.h>
 # include <string.h>
-
 
 typedef struct s_request
 {
@@ -37,16 +36,16 @@ typedef struct s_heap
 
 typedef struct s_config
 {
-	int		number_of_coders;
-	int		time_to_burnout;
-	int		time_to_compile;
-	int		time_to_debug;
-	int		time_to_refactor;
-	int		number_of_compile_required;
-	int		dongle_cooldown;
-	int		scheduler;
-	long	start_time;
-	pthread_mutex_t nb_requred_compile_mutex;
+	int				number_of_coders;
+	int				time_to_burnout;
+	int				time_to_compile;
+	int				time_to_debug;
+	int				time_to_refactor;
+	int				number_of_compile_required;
+	int				dongle_cooldown;
+	int				scheduler;
+	long			start_time;
+	pthread_mutex_t	nb_requred_compile_mutex;
 }	t_config;
 
 typedef struct s_simulation
@@ -140,5 +139,6 @@ int		heap_pop(t_heap *heap);
 void	destroy_simulation(t_simulation *simulation);
 void	destroy_dongles_data(t_dongle *dongles_data, int count);
 void	destroy_heap(t_heap *heap);
+long	protect_number_of_coders(t_coder *coder_data);
 
 #endif
