@@ -1,61 +1,82 @@
 #include "../include/codexion.h"
 
-void init_dongles_data(t_dongle *dongles_data, int count)
+void	push_request(t_coder *coder_data, t_dongle *dongle)
 {
-    int i;
+	t_request	request;
 
-    i = 0;
-    while (i < count)
-    {
-        dongles_data[i].id = i + 1;
-        dongles_data[i].owner = -1;
-        dongles_data[i].cooldown_deadline = 0;
-        pthread_cond_init(&dongles_data[i].cond_dongle, NULL);
-        pthread_mutex_init(&dongles_data[i].mutex_dongle, NULL);
-        i++;
-    }
+	if (coder_data->n_compiles
+		>= coder_data->config->number_of_compile_required - 1)
+		return ;
+	if (coder_data->config->scheduler)
+		request = (t_request){get_time_ms(), coder_data->id};
+	else
+		request = (t_request){coder_data->burnout_deadline, coder_data->id};
+	pthread_mutex_lock(&dongle->mutex_dongle);
+	heap_push(dongle->heap, request);
+	pthread_mutex_unlock(&dongle->mutex_dongle);
 }
 
-int request_dongle(t_coder *coder_data, t_dongle *dongle)
+void	init_dongles_data(t_dongle *dongles_data, int count)
 {
-    pthread_mutex_lock(&dongle->mutex_dongle);
-    while (!simulation_stopped(coder_data->simulation))
-    {
-        if (thread_sleep(coder_data, dongle->cooldown_deadline-get_time_ms()))
-            break;
+	int	i;
 
-        if (dongle->owner == -1)
-            break;
-
-        if (simulation_stopped(coder_data->simulation))
-            break;
-        pthread_cond_wait(&dongle->cond_dongle, &dongle->mutex_dongle);
-    }
-    dongle->owner = coder_data->id;
-    pthread_mutex_unlock(&dongle->mutex_dongle);
-    return simulation_stopped(coder_data->simulation);
+	i = 0;
+	while (i < count)
+	{
+		dongles_data[i].id = i + 1;
+		dongles_data[i].owner = -1;
+		dongles_data[i].cooldown_deadline = 0;
+		dongles_data[i].heap = init_heap();
+		pthread_cond_init(&dongles_data[i].cond_dongle, NULL);
+		pthread_mutex_init(&dongles_data[i].mutex_dongle, NULL);
+		i++;
+	}
 }
 
-int take_dongles(t_coder *coder_data)
+int	request_dongle(t_coder *coder_data, t_dongle *dongle)
 {
-    if (request_dongle(coder_data, coder_data->first_dongle))
-        return 1;
-
-    if (request_dongle(coder_data, coder_data->second_dongle))
-        return 1;
-    return 0;
+	pthread_mutex_lock(&dongle->mutex_dongle);
+	while (!simulation_stopped(coder_data->simulation))
+	{
+		if (thread_sleep(coder_data,
+				dongle->cooldown_deadline - get_time_ms()))
+			break ;
+		if (simulation_stopped(coder_data->simulation))
+			break ;
+		if (dongle->heap->arr[0].id == coder_data->id
+			&& dongle->owner == -1)
+			break ;
+		pthread_cond_wait(&dongle->cond_dongle, &dongle->mutex_dongle);
+	}
+	heap_pop(dongle->heap);
+	dongle->owner = coder_data->id;
+	pthread_mutex_unlock(&dongle->mutex_dongle);
+	return (simulation_stopped(coder_data->simulation));
 }
 
-void release_dongles(t_coder *coder_data)
+int	take_dongles(t_coder *coder_data)
 {
-    pthread_mutex_lock(&coder_data->first_dongle->mutex_dongle);
-    coder_data->first_dongle->owner = -1;
-    coder_data->first_dongle->cooldown_deadline = get_time_ms() + coder_data->config->dongle_cooldown;
-    pthread_cond_broadcast(&coder_data->first_dongle->cond_dongle);
-    pthread_mutex_unlock(&coder_data->first_dongle->mutex_dongle);
-    pthread_mutex_lock(&coder_data->second_dongle->mutex_dongle);
-    coder_data->second_dongle->owner = -1;
-    coder_data->second_dongle->cooldown_deadline = get_time_ms() + coder_data->config->dongle_cooldown;
-    pthread_cond_broadcast(&coder_data->second_dongle->cond_dongle);
-    pthread_mutex_unlock(&coder_data->second_dongle->mutex_dongle);
+	if (request_dongle(coder_data, coder_data->first_dongle))
+		return (1);
+	if (request_dongle(coder_data, coder_data->second_dongle))
+		return (1);
+	return (0);
+}
+
+void	release_dongles(t_coder *coder_data)
+{
+	push_request(coder_data, coder_data->first_dongle);
+	push_request(coder_data, coder_data->second_dongle);
+	pthread_mutex_lock(&coder_data->first_dongle->mutex_dongle);
+	coder_data->first_dongle->owner = -1;
+	coder_data->first_dongle->cooldown_deadline = get_time_ms()
+		+ coder_data->config->dongle_cooldown;
+	pthread_cond_broadcast(&coder_data->first_dongle->cond_dongle);
+	pthread_mutex_unlock(&coder_data->first_dongle->mutex_dongle);
+	pthread_mutex_lock(&coder_data->second_dongle->mutex_dongle);
+	coder_data->second_dongle->owner = -1;
+	coder_data->second_dongle->cooldown_deadline = get_time_ms()
+		+ coder_data->config->dongle_cooldown;
+	pthread_cond_broadcast(&coder_data->second_dongle->cond_dongle);
+	pthread_mutex_unlock(&coder_data->second_dongle->mutex_dongle);
 }

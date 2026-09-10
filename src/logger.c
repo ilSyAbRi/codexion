@@ -1,14 +1,13 @@
 #include "../include/codexion.h"
 
-
-void	log_task(t_coder	*coder_data, t_task task)
+void	log_task(t_coder *coder_data, t_task task)
 {
 	long	time;
 
 	pthread_mutex_lock(&coder_data->simulation->mutex_print);
 	if (!simulation_stopped(coder_data->simulation))
 	{
-		time = get_time_ms()-coder_data->start_time;
+		time = get_time_ms() - coder_data->start_time;
 		if (task == COMPILE)
 		{
 			printf("%ld %d has taken a dongle\n", time, coder_data->id);
@@ -25,9 +24,10 @@ void	log_task(t_coder	*coder_data, t_task task)
 
 void	log_burnout(t_coder *coders_data, int burned_coder)
 {
-	long time;
+	long	time;
+
 	pthread_mutex_lock(&coders_data[burned_coder].simulation->mutex_print);
-	time = get_time_ms()-coders_data[burned_coder].start_time;
+	time = get_time_ms() - coders_data[burned_coder].start_time;
 	printf("%ld %d burned out\n", time, coders_data[burned_coder].id);
 	stop_simulation(coders_data, coders_data[burned_coder].simulation);
 	pthread_mutex_unlock(&coders_data[burned_coder].simulation->mutex_print);
