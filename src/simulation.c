@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:55:10 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 22:11:01 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/11 00:27:34 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,17 @@ void	stop_simulation(t_coder *coder_data, t_simulation *simulation)
 	i = 0;
 	pthread_mutex_lock(&simulation->mutex_stop);
 	simulation->stop = 1;
+	pthread_mutex_unlock(&simulation->mutex_stop);
 	while (i < coder_data->config->number_of_coders)
 	{
+		pthread_mutex_lock(&coder_data[i].first_dongle->mutex_dongle);
 		pthread_cond_broadcast(&coder_data[i].first_dongle->cond_dongle);
+		pthread_mutex_unlock(&coder_data[i].first_dongle->mutex_dongle);
+		pthread_mutex_lock(&coder_data[i].second_dongle->mutex_dongle);
 		pthread_cond_broadcast(&coder_data[i].second_dongle->cond_dongle);
+		pthread_mutex_unlock(&coder_data[i].second_dongle->mutex_dongle);
 		i++;
 	}
-	pthread_mutex_unlock(&simulation->mutex_stop);
 }
 
 int	simulation_stopped(t_simulation *simulation)

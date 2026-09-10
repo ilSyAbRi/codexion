@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:55:19 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 18:55:19 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/11 00:27:06 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ int	thread_sleep(t_coder *coder_data, long time)
 		return (0);
 	ts.tv_sec = (get_time_ms() + time) / 1000;
 	ts.tv_nsec = ((get_time_ms() + time) % 1000) * 1000000;
-	pthread_mutex_lock(&coder_data->mutex_sleep);
-	while (!simulation_stopped(coder_data->simulation))
+	pthread_mutex_lock(&coder_data->simulation->mutex_stop);
+	while (!coder_data->simulation->stop)
 	{
 		if (pthread_cond_timedwait(&coder_data->simulation->cond,
-				&coder_data->mutex_sleep, &ts) != 0)
+				&coder_data->simulation->mutex_stop, &ts) != 0)
 			break ;
 	}
-	pthread_mutex_unlock(&coder_data->mutex_sleep);
+	pthread_mutex_unlock(&coder_data->simulation->mutex_stop);
 	return (simulation_stopped(coder_data->simulation));
 }
