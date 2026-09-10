@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:55:43 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/10 21:26:19 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/11 00:01:07 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_config
 	int		dongle_cooldown;
 	int		scheduler;
 	long	start_time;
+	pthread_mutex_t nb_requred_compile_mutex;
 }	t_config;
 
 typedef struct s_simulation
