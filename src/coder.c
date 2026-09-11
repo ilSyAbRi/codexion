@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:25:38 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/11 00:12:35 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/11 00:53:53 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ void	*coder_routing(void *arg)
 		if (coder_phase(coder_data,
 				coder_data->config->time_to_compile, COMPILE))
 			break ;
+		coder_data->n_compiles++;
 		release_dongles(coder_data);
 		if (coder_phase(coder_data,
 				coder_data->config->time_to_debug, DEBUG))
@@ -96,7 +97,6 @@ void	*coder_routing(void *arg)
 		if (coder_phase(coder_data,
 				coder_data->config->time_to_refactor, REFACTOR))
 			break ;
-		coder_data->n_compiles++;
 	}
 	coder_finished(coder_data->simulation);
 	return (NULL);
