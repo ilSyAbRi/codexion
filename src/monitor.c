@@ -6,7 +6,7 @@
 /*   By: ilsyabri <ilsyabri@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/10 18:53:38 by ilsyabri          #+#    #+#             */
-/*   Updated: 2026/09/11 00:33:30 by ilsyabri         ###   ########.fr       */
+/*   Updated: 2026/09/11 22:05:39 by ilsyabri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	*monitor_routine(void *arg)
 		while (i < coders_data->config->number_of_coders)
 		{
 			deadline = protect_get_burnout_deadline(&coders_data[i]);
-			if (get_time_ms() > deadline
+			if (get_time_ms() >= deadline
 				&& coders_data[i].n_compiles
 				< protect_number_of_coders(&coders_data[i]))
 			{
